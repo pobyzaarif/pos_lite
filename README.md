@@ -8,9 +8,9 @@ POS_Lite is sample Point Of Sales system build in golang and using hexagonal arc
 
 ### endpoint list
 - login
-    POST localhost:4001/v1/user/login
-    payload
 
+POST localhost:4001/v1/user/login
+payload
 ```
 {
     "email": "admin@poslite.admin",
