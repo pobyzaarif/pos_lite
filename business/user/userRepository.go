@@ -1,7 +1,11 @@
 package user
 
-type Repository interface {
-	FindByIDandVersion(id, version int) (selectedUser User, err error)
+import (
+	"github.com/pobyzaarif/pos_lite/business"
+)
 
-	FindByEmail(email string) (selectedUser User, err error)
+type Repository interface {
+	FindByIDandVersion(ic business.InternalContext, id, version int) (selectedUser User, err error)
+
+	FindByEmail(ic business.InternalContext, email string) (selectedUser User, err error)
 }

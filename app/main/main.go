@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -18,20 +18,18 @@ import (
 	userModule "github.com/pobyzaarif/pos_lite/modules/user"
 
 	"github.com/pobyzaarif/pos_lite/business/transaction"
-	reportAPIModule "github.com/pobyzaarif/pos_lite/modules/reportAPI"
 	transactionModule "github.com/pobyzaarif/pos_lite/modules/transaction"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	gommonLog "github.com/labstack/gommon/log"
 	"gorm.io/gorm"
 
 	goutilAppName "github.com/pobyzaarif/goutil/appname"
 	goutilLogger "github.com/pobyzaarif/goutil/logger"
-	goutilEchoMiddlerware "github.com/pobyzaarif/goutil/webframework/echo/v4/middleware"
+	goutilEchoMiddlerware "github.com/pobyzaarif/goutil/rest/framework/echo/v4/middleware"
 )
 
-var logger = goutilLogger.NewLog("main")
+var logger = goutilLogger.NewLog("MAIN")
 
 func newUserService(db *gorm.DB) (userService user.Service) {
 	userRepo := userModule.NewGormRepository(db)
@@ -42,8 +40,7 @@ func newUserService(db *gorm.DB) (userService user.Service) {
 
 func newTransactionService(db *gorm.DB) (transactionService transaction.Service) {
 	transactionRepo := transactionModule.NewGormRepository(db)
-	reportAPIRepo := reportAPIModule.NewAPI()
-	transactionService = transaction.NewService(transactionRepo, reportAPIRepo)
+	transactionService = transaction.NewService(transactionRepo)
 
 	return
 }
@@ -62,13 +59,10 @@ func main() {
 	e.Use(goutilEchoMiddlerware.ServiceTrackerID)
 	e.Use(middleware.BodyDumpWithConfig(middleware.BodyDumpConfig{
 		Handler: goutilEchoMiddlerware.APILogHandler,
-		Skipper: middleware.DefaultSkipper,
+		Skipper: goutilEchoMiddlerware.DefaultSkipper,
 	}))
 
-	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
-		StackSize: 4 << 10,
-		LogLevel:  gommonLog.ERROR,
-	}))
+	e.Use(goutilEchoMiddlerware.Recover())
 
 	userService := newUserService(db)
 	authService := auth.NewService(userService)
@@ -89,14 +83,14 @@ func main() {
 	address := "0.0.0.0:" + conf.AppMainPort
 	go func() {
 		if err := e.Start(address); err != http.ErrServerClosed {
-			log.Fatal("failed on http server" + conf.AppMainPort)
+			logger.Fatal("failed on http server" + conf.AppMainPort)
 		}
 	}()
 
 	logger.SetTrackerID("main")
 	logger.Info(goutilAppName.GetAPPName() + " service running in " + address)
 
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 
@@ -105,8 +99,8 @@ func main() {
 	defer cancel()
 
 	if err := e.Shutdown(ctx); err != nil {
-		log.Fatalf("failed to shutting down echo server %v", err)
+		logger.Fatal(fmt.Sprintf("failed to shutting down echo server %v", err))
 	} else {
-		log.Print("successfully shutting down echo server")
+		logger.Info("successfully shutting down echo server")
 	}
 }

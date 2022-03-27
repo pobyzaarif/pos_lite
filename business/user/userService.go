@@ -1,14 +1,18 @@
 package user
 
+import (
+	"github.com/pobyzaarif/pos_lite/business"
+)
+
 type (
 	service struct {
 		repository Repository
 	}
 
 	Service interface {
-		FindByIDandVersion(id int, version int) (User, error)
+		FindByIDandVersion(ic business.InternalContext, id int, version int) (User, error)
 
-		FindByEmail(email string) (User, error)
+		FindByEmail(ic business.InternalContext, email string) (User, error)
 	}
 )
 
@@ -18,10 +22,10 @@ func NewService(repository Repository) Service {
 	}
 }
 
-func (s *service) FindByIDandVersion(id int, version int) (User, error) {
-	return s.repository.FindByIDandVersion(id, version)
+func (s *service) FindByIDandVersion(ic business.InternalContext, id int, version int) (User, error) {
+	return s.repository.FindByIDandVersion(ic, id, version)
 }
 
-func (s *service) FindByEmail(email string) (User, error) {
-	return s.repository.FindByEmail(email)
+func (s *service) FindByEmail(ic business.InternalContext, email string) (User, error) {
+	return s.repository.FindByEmail(ic, email)
 }

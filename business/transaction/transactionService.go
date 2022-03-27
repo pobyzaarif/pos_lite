@@ -4,39 +4,37 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"net/http"
 	"time"
 
-	reportapi "github.com/pobyzaarif/pos_lite/business/transaction/reportAPI"
+	goutilHTTPClient "github.com/pobyzaarif/goutil/http/client"
+	"github.com/pobyzaarif/pos_lite/business"
 )
 
 type (
 	service struct {
-		repository          Repository
-		reportAPIRepository reportapi.APIRespository
+		repository Repository
 	}
 
 	Service interface {
-		GetSummaryTransaction(date string) (summaryTransaction TransactionSummaryByDate, err error)
+		GetSummaryTransaction(ic business.InternalContext, date string) (summaryTransaction TransactionSummaryByDate, err error)
 
-		SendSummaryTransaction(date string, to string) (err error)
+		SendSummaryTransaction(ic business.InternalContext, date string, to string) (err error)
 	}
 )
 
-func NewService(repository Repository, reportAPIRepository reportapi.APIRespository) Service {
+func NewService(repository Repository) Service {
 	return &service{
 		repository,
-		reportAPIRepository,
 	}
 }
 
-func (s *service) GetSummaryTransaction(date string) (summaryTransaction TransactionSummaryByDate, err error) {
-	return s.repository.GetSummaryTransaction(date)
+func (s *service) GetSummaryTransaction(ic business.InternalContext, date string) (summaryTransaction TransactionSummaryByDate, err error) {
+	return s.repository.GetSummaryTransaction(ic, date)
 }
 
-func (s *service) SendSummaryTransaction(date string, toURL string) (err error) {
-	trxSummary, err := s.repository.GetSummaryTransaction(date)
+func (s *service) SendSummaryTransaction(ic business.InternalContext, date string, toURL string) (err error) {
+	trxSummary, err := s.repository.GetSummaryTransaction(ic, date)
 	if err != nil {
 		return
 	}
@@ -47,32 +45,32 @@ func (s *service) SendSummaryTransaction(date string, toURL string) (err error) 
 		return
 	}
 
-	rand.Seed(time.Now().UnixNano())
-	timeDelay := rand.Intn(7000-1000) + 1000 // simulate delay response between 1000 until 7000 mili
-	timeDelayString := fmt.Sprintf("%v", timeDelay)
-	httpCodeResponseList := []string{"200", "400", "500"} // simulate http response code either 200, 400 or 500
-	httpCodeResponse := httpCodeResponseList[rand.Intn(len(httpCodeResponseList))]
-
 	// construct request
-	request, err := http.NewRequest(http.MethodPost, toURL+"/"+httpCodeResponse+"?sleep="+timeDelayString, payload)
+	request, err := http.NewRequest(http.MethodPost, toURL, payload)
 	if err != nil {
 		return
 	}
-
 	request.Header.Add("Accept", "application/json")
 	request.Header.Add("Content-Type", "application/json")
 
-	var client http.Client
-	client.Timeout = time.Second * 5
+	timeout := time.Second * 5
 
-	res, err := client.Do(request)
+	var response string
+	httpCode, err := goutilHTTPClient.Call(
+		ic.ToContext(),
+		request,
+		timeout,
+		goutilHTTPClient.RawResponseBodyFormat,
+		&response,
+		nil,
+	)
+
 	if err != nil {
-		return
+		err = fmt.Errorf("error processing request to " + toURL)
 	}
-	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		err = fmt.Errorf("response HTTP code is not 200")
+	if httpCode != 200 {
+		err = fmt.Errorf("error response HTTP code is not 200 " + toURL)
 	}
 
 	return

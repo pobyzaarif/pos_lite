@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/pobyzaarif/pos_lite/business"
 	"github.com/pobyzaarif/pos_lite/business/user"
 )
 
@@ -22,7 +23,7 @@ type (
 	}
 
 	Service interface {
-		VerifyLogin(email string, salt string, plainPassword string) (status bool)
+		VerifyLogin(ic business.InternalContext, email string, salt string, plainPassword string) (status bool)
 
 		GenerateToken(jwtSign string, userID int, userRole user.Role) (signedToken string, err error)
 	}
@@ -34,8 +35,8 @@ func NewService(userService user.Service) Service {
 	}
 }
 
-func (s *service) VerifyLogin(email string, salt, plainPassword string) (status bool) {
-	user, err := s.userService.FindByEmail(email)
+func (s *service) VerifyLogin(ic business.InternalContext, email string, salt, plainPassword string) (status bool) {
+	user, err := s.userService.FindByEmail(ic, email)
 	if err != nil {
 		return
 	}

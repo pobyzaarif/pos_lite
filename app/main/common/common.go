@@ -10,10 +10,19 @@ const (
 	EmptyList
 	EmptyString
 	Zero
+
+	ErrorBindingRequest    LogMessage = "error_binding_request"
+	ErrorValidationRequest LogMessage = "error_validation_request"
+	ErrorGeneral           LogMessage = "error_general"
 )
+
+func (e LogMessage) String() string {
+	return string(e)
+}
 
 type (
 	ErrorDataType int
+	LogMessage    string
 
 	Response struct {
 		Message string      `json:"message"`

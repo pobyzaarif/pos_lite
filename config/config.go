@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	goutilGormLogger "github.com/pobyzaarif/goutil/database/framework/gorm/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -68,16 +69,16 @@ func (conf *Config) GetDatabaseConnection() *gorm.DB {
 			log.Fatal(err)
 		}
 
-		return db
+		return db.Debug()
 	}
 
 	if conf.DBDriver == "sqlite" {
-		db, err := gorm.Open(sqlite.Open(conf.DBSQLiteName), &gorm.Config{Logger: newDBLogger()})
+		db, err := gorm.Open(sqlite.Open(conf.DBSQLiteName), &gorm.Config{Logger: goutilGormLogger.Default})
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		return db
+		return db.Debug()
 	}
 
 	log.Fatal("unsupported driver")
@@ -87,12 +88,12 @@ func (conf *Config) GetDatabaseConnection() *gorm.DB {
 
 func newDBLogger() logger.Interface {
 	return logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		log.Default(),
 		logger.Config{
-			SlowThreshold:             time.Second,   // Slow SQL threshold
-			LogLevel:                  logger.Silent, // Log level
-			IgnoreRecordNotFoundError: false,         // Ignore ErrRecordNotFound error for logger
-			Colorful:                  true,          // Enable Color
+			SlowThreshold:             30 * time.Second, // Slow SQL threshold
+			LogLevel:                  logger.Silent,    // Log level
+			IgnoreRecordNotFoundError: false,            // Ignore ErrRecordNotFound error for logger
+			Colorful:                  false,            // Enable Color
 		},
 	)
 

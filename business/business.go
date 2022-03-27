@@ -1,6 +1,9 @@
 package business
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type ObjectMetadata struct {
 	CreatedAt  time.Time `json:"created_at" gorm:"created_at"`
@@ -10,4 +13,19 @@ type ObjectMetadata struct {
 	DeletedAt  time.Time `json:"deleted_at" gorm:"deleted_at"`
 	DeletedBy  int       `json:"deleted_by" gorm:"deleted_by"`
 	Version    int       `json:"version" gorm:"version"`
+}
+
+type InternalContext struct {
+	TrackerID string
+}
+
+func NewInternalContext(trackerID string) InternalContext {
+	return InternalContext{
+		TrackerID: trackerID,
+	}
+}
+
+func (ic InternalContext) ToContext() context.Context {
+	ctx := context.WithValue(context.Background(), "tracker_id", ic.TrackerID)
+	return ctx
 }
