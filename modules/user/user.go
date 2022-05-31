@@ -1,14 +1,9 @@
 package user
 
 import (
-	goLogger "github.com/pobyzaarif/go-logger/logger"
 	"github.com/pobyzaarif/pos_lite/business"
 	"github.com/pobyzaarif/pos_lite/business/user"
 	"gorm.io/gorm"
-)
-
-var (
-	logger = goLogger.NewLog("USER_REPO")
 )
 
 type (
