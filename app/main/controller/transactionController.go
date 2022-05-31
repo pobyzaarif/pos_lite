@@ -18,7 +18,7 @@ type (
 	}
 
 	sendTransactionByDate struct {
-		Date string `json:"date" validate:"required,datetime=2006-01-02,numeric,min=11,max=14"`
+		Date string `json:"date" validate:"required,datetime=2006-01-02"`
 		URL  string `json:"url" validate:"required,url"`
 	}
 )
