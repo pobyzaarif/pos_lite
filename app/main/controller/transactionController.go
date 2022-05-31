@@ -5,12 +5,12 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
-	goutilLogger "github.com/pobyzaarif/goutil/logger"
+	goLogger "github.com/pobyzaarif/go-logger/logger"
 	"github.com/pobyzaarif/pos_lite/app/main/common"
 	"github.com/pobyzaarif/pos_lite/business"
 )
 
-var tclogger = goutilLogger.NewLog("TRANSACTION_CONTROLLER")
+var tclogger = goLogger.NewLog("TRANSACTION_CONTROLLER")
 
 type (
 	transactionByDate struct {
@@ -18,7 +18,7 @@ type (
 	}
 
 	sendTransactionByDate struct {
-		Date string `json:"date" validate:"required,datetime=2006-01-02"`
+		Date string `json:"date" validate:"required,datetime=2006-01-02,numeric,min=11,max=14"`
 		URL  string `json:"url" validate:"required,url"`
 	}
 )

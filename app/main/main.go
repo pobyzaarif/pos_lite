@@ -24,12 +24,12 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 
-	goutilAppName "github.com/pobyzaarif/goutil/appname"
-	goutilLogger "github.com/pobyzaarif/goutil/logger"
-	goutilEchoMiddlerware "github.com/pobyzaarif/goutil/rest/framework/echo/v4/middleware"
+	goLoggerAppName "github.com/pobyzaarif/go-logger/appname"
+	goLogger "github.com/pobyzaarif/go-logger/logger"
+	goLoggerEchoMiddlerware "github.com/pobyzaarif/go-logger/rest/framework/echo/v4/middleware"
 )
 
-var logger = goutilLogger.NewLog("MAIN")
+var logger = goLogger.NewLog("MAIN")
 
 func newUserService(db *gorm.DB) (userService user.Service) {
 	userRepo := userModule.NewGormRepository(db)
@@ -55,14 +55,14 @@ func main() {
 	e.HidePort = true
 
 	e.Pre(middleware.RemoveTrailingSlash())
-	e.Use(goutilEchoMiddlerware.ServiceRequestTime)
-	e.Use(goutilEchoMiddlerware.ServiceTrackerID)
+	e.Use(goLoggerEchoMiddlerware.ServiceRequestTime)
+	e.Use(goLoggerEchoMiddlerware.ServiceTrackerID)
 	e.Use(middleware.BodyDumpWithConfig(middleware.BodyDumpConfig{
-		Handler: goutilEchoMiddlerware.APILogHandler,
-		Skipper: goutilEchoMiddlerware.DefaultSkipper,
+		Handler: goLoggerEchoMiddlerware.APILogHandler,
+		Skipper: goLoggerEchoMiddlerware.DefaultSkipper,
 	}))
 
-	e.Use(goutilEchoMiddlerware.Recover())
+	e.Use(goLoggerEchoMiddlerware.Recover())
 
 	userService := newUserService(db)
 	authService := auth.NewService(userService)
@@ -88,7 +88,7 @@ func main() {
 	}()
 
 	logger.SetTrackerID("main")
-	logger.Info(goutilAppName.GetAPPName() + " service running in " + address)
+	logger.Info(goLoggerAppName.GetAPPName() + " service running in " + address)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)

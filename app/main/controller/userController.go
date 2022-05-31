@@ -8,10 +8,10 @@ import (
 	"github.com/pobyzaarif/pos_lite/app/main/common"
 	"github.com/pobyzaarif/pos_lite/business"
 
-	goutilLogger "github.com/pobyzaarif/goutil/logger"
+	goLogger "github.com/pobyzaarif/go-logger/logger"
 )
 
-var uclogger = goutilLogger.NewLog("USER_CONTROLLER")
+var uclogger = goLogger.NewLog("USER_CONTROLLER")
 
 type (
 	userLoginRequest struct {

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	goutilGormLogger "github.com/pobyzaarif/goutil/database/framework/gorm/logger"
+	goLoggerGormLogger "github.com/pobyzaarif/go-logger/database/framework/gorm/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -73,7 +73,7 @@ func (conf *Config) GetDatabaseConnection() *gorm.DB {
 	}
 
 	if conf.DBDriver == "sqlite" {
-		db, err := gorm.Open(sqlite.Open(conf.DBSQLiteName), &gorm.Config{Logger: goutilGormLogger.Default})
+		db, err := gorm.Open(sqlite.Open(conf.DBSQLiteName), &gorm.Config{Logger: goLoggerGormLogger.Default})
 		if err != nil {
 			log.Fatal(err)
 		}
