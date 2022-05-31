@@ -37,15 +37,8 @@ func (ctrl *Controller) UserLogin(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, common.NewBadRequestResponse(common.EmptyObject))
 	}
 
-	user, err := ctrl.userService.FindByEmail(ic, request.Email)
-	if err != nil || user.ID == 0 {
-		uclogger.ErrorWithData(common.ErrorGeneral.String(), map[string]interface{}{
-			"user": user,
-		}, err)
-		return c.JSON(http.StatusUnauthorized, common.NewUnauthorizedResponse(common.EmptyObject))
-	}
-
-	if !ctrl.authService.VerifyLogin(ic, request.Email, ctrl.appConfig.AppUserPasswordSalt, request.Password) {
+	user, validPassword := ctrl.authService.VerifyLogin(ic, request.Email, ctrl.appConfig.AppUserPasswordSalt, request.Password)
+	if !validPassword {
 		uclogger.ErrorWithData(common.ErrorGeneral.String(), map[string]interface{}{
 			"user": user,
 		}, err)

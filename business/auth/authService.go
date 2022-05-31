@@ -23,7 +23,7 @@ type (
 	}
 
 	Service interface {
-		VerifyLogin(ic business.InternalContext, email string, salt string, plainPassword string) (status bool)
+		VerifyLogin(ic business.InternalContext, email string, salt string, plainPassword string) (getUser user.User, validPassword bool)
 
 		GenerateToken(jwtSign string, userID int, userRole user.Role) (signedToken string, err error)
 	}
@@ -35,17 +35,19 @@ func NewService(userService user.Service) Service {
 	}
 }
 
-func (s *service) VerifyLogin(ic business.InternalContext, email string, salt, plainPassword string) (status bool) {
-	user, err := s.userService.FindByEmail(ic, email)
+func (s *service) VerifyLogin(ic business.InternalContext, email string, salt, plainPassword string) (getUser user.User, validPassword bool) {
+	getUser, err := s.userService.FindByEmail(ic, email)
 	if err != nil {
 		return
 	}
 
-	if createPasswordHash(salt, plainPassword) != user.Password {
+	if createPasswordHash(salt, plainPassword) != getUser.Password {
 		return
 	}
 
-	return true
+	validPassword = true
+
+	return
 }
 
 func createPasswordHash(salt, plainPassword string) (passwordHash string) {
