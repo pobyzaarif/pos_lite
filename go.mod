@@ -2,14 +2,14 @@ module github.com/pobyzaarif/pos_lite
 
 go 1.17
 
-// replace github.com/pobyzaarif/go-logger v0.0.0-20220531170406-dff8b26c6205 => /Users/7noob/Project/go-logger
+// replace github.com/pobyzaarif/go-logger v1.0.0 => /Users/7noob/Project/go-logger
 
 require (
 	github.com/go-playground/validator/v10 v10.9.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/joho/godotenv v1.4.0
 	github.com/labstack/echo/v4 v4.6.1
-	github.com/pobyzaarif/go-logger v0.0.0-20220531170406-dff8b26c6205
+	github.com/pobyzaarif/go-logger v1.0.0
 	gorm.io/driver/mysql v1.3.2
 	gorm.io/driver/sqlite v1.2.6
 	gorm.io/gorm v1.23.3
