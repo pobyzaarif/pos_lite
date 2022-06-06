@@ -83,7 +83,7 @@ func main() {
 	address := "0.0.0.0:" + conf.AppMainPort
 	go func() {
 		if err := e.Start(address); err != http.ErrServerClosed {
-			logger.Fatal("failed on http server" + conf.AppMainPort)
+			logger.Fatal("failed on http server " + conf.AppMainPort)
 		}
 	}()
 
