@@ -1,0 +1,10 @@
+p, superadmin, *, *
+p, owner, *, *
+p, admin, product, *
+p, admin, transaction, *
+p, cashier, product, read
+p, cashier, transaction, create
+p, cashier, transaction, read
+p, cashier, transaction, send-summary
+
+g, root, superadmin

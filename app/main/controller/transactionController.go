@@ -51,12 +51,13 @@ func (ctrl *Controller) GetTransactionReportByDate(c echo.Context) error {
 		response := common.NewResponse(http.StatusText(http.StatusInternalServerError), responseTransactionSummary)
 		return c.JSON(http.StatusInternalServerError, response)
 	}
+
 	responseTransactionSummary["total_transaction"] = trxSummary.TotalTransaction
 	responseTransactionSummary["total_products_sold"] = trxSummary.TotalProductsSold
 	responseTransactionSummary["total_gross_earnings"] = trxSummary.TotalGrossEarnings
 
 	tclogger.InfoWithData("ok", map[string]interface{}{"response": responseTransactionSummary})
-	return c.JSON(http.StatusOK, responseTransactionSummary)
+	return c.JSON(http.StatusOK, common.NewResponse(http.StatusText(http.StatusOK), responseTransactionSummary))
 }
 
 func (ctrl *Controller) SendTransactionReportByDate(c echo.Context) error {

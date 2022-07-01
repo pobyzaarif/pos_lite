@@ -77,6 +77,7 @@ func main() {
 
 	router.RegisterPath(
 		e,
+		conf,
 		controllerAPP,
 	)
 

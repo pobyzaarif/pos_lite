@@ -55,6 +55,12 @@ func NewBadRequestResponse(dataType ErrorDataType) (res Response) {
 	return
 }
 
+func NewForbiddenResponse(dataType ErrorDataType) (res Response) {
+	res.Message = http.StatusText(http.StatusForbidden)
+	res.Data = getDataType(dataType)
+	return
+}
+
 func NewUnauthorizedResponse(dataType ErrorDataType) (res Response) {
 	res.Message = http.StatusText(http.StatusUnauthorized)
 	res.Data = getDataType(dataType)

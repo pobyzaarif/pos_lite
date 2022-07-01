@@ -15,8 +15,11 @@ require (
 	gorm.io/gorm v1.23.3
 )
 
+require github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
+
 require (
 	github.com/basgys/goxml2json v1.1.0 // indirect
+	github.com/casbin/casbin/v2 v2.47.2
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect

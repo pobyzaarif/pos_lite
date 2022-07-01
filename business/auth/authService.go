@@ -12,8 +12,8 @@ import (
 
 type (
 	JwtClaims struct {
-		UserID int       `json:"user_id"`
-		Role   user.Role `json:"role"`
+		UserID int    `json:"user_id"`
+		Role   string `json:"role"`
 
 		jwt.StandardClaims
 	}
@@ -25,7 +25,7 @@ type (
 	Service interface {
 		VerifyLogin(ic business.InternalContext, email string, salt string, plainPassword string) (getUser user.User, validPassword bool)
 
-		GenerateToken(jwtSign string, userID int, userRole user.Role) (signedToken string, err error)
+		GenerateToken(jwtSign string, userID int, userRole string) (signedToken string, err error)
 	}
 )
 
@@ -57,7 +57,7 @@ func createPasswordHash(salt, plainPassword string) (passwordHash string) {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func newJWTClaims(userID int, role user.Role, issuedAt int64, expiredAt int64) JwtClaims {
+func newJWTClaims(userID int, role string, issuedAt int64, expiredAt int64) JwtClaims {
 	return JwtClaims{
 		UserID: userID,
 		Role:   role,
@@ -68,7 +68,7 @@ func newJWTClaims(userID int, role user.Role, issuedAt int64, expiredAt int64) J
 	}
 }
 
-func (s *service) GenerateToken(jwtSign string, userID int, userRole user.Role) (signedToken string, err error) {
+func (s *service) GenerateToken(jwtSign string, userID int, userRole string) (signedToken string, err error) {
 	timeNow := time.Now()
 	claims := newJWTClaims(userID, userRole, timeNow.Unix(), timeNow.Add(time.Hour*24).Unix())
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

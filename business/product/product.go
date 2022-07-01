@@ -7,6 +7,7 @@ type (
 		ID    int
 		Name  string
 		Price int
+		Qty   int
 
 		business.ObjectMetadata
 	}

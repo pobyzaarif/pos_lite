@@ -72,4 +72,4 @@ CREATE TABLE `users` (
   KEY `users_index_0` (`role`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
-INSERT INTO `users` VALUES (1,'superadmin','admin','admin@poslite.admin','9c45852b581b86b4a117f53604fc7b9b','2021-12-09 17:10:52',1,'2021-12-09 17:10:52',1,NULL,NULL,1);
+INSERT INTO `users` VALUES (1,'superadmin','root','root@superadmin.poslite','2c0abfaabeb5d33123d606ec9820475c','2021-12-09 17:10:52',1,'2021-12-09 17:10:52',1,NULL,NULL,1);
